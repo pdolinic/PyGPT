@@ -1,5 +1,5 @@
 # Idea of Shell Variant & Blogpost from SAKATA: https://medium.com/geekculture/2022-how-to-use-chatgpt-api-with-curl-88830dec8a65
-
+# Asciart from: https://patorjk.com/software/taag/#p=testall&h=2&v=1&c=bash&f=Graffiti&t=pygpt
 # The following Python3 modified Code was AI-assited with GPT, for GPT
 # Below replace my_api_key with your API-Key
 
@@ -9,8 +9,16 @@ import sys
 import requests
 import json
 
+print(r"""  
+  .----.-.  .-.---..----. .---. 
+  | {}  } \/ /   __} {}  |_   _}
+  | .--' }  {\  {_ } .--'  | |  
+  `-'    `--' `---'`-'     `-'  
+      """)
+
 if len(sys.argv) != 3:
     print("Usage: python script.py prompt temperature")
+    print('Example: python3 openai.py "Explain divide & conquer in C++, then show some code!" 1.0')
     sys.exit(1)
 
 keyword = sys.argv[1]
