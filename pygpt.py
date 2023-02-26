@@ -1,6 +1,7 @@
 # Idea of Shell Variant & Blogpost from SAKATA: https://medium.com/geekculture/2022-how-to-use-chatgpt-api-with-curl-88830dec8a65
 # Asciart from: https://patorjk.com/software/taag/#p=testall&h=2&v=1&c=bash&f=Graffiti&t=pygpt
-# The following Python3 modified Code was AI-assited with GPT, for GPT
+# The following Python3 modified Code was AI-assisted with GPT, for GPT!
+
 # Below replace my_api_key with your API-Key
 
 #!/usr/bin/env python3
@@ -15,6 +16,7 @@ print(r"""
   | .--' }  {\  {_ } .--'  | |  
   `-'    `--' `---'`-'     `-'  
       """)
+print("----------------------------------------------"))
 
 if len(sys.argv) != 3:
     print("Usage: python script.py prompt temperature")
@@ -50,4 +52,5 @@ debugging_fields = {
     "model": output["model"]
 }
 
+print("----------------------------------------------"))
 print("Debugging fields:", json.dumps(debugging_fields))
