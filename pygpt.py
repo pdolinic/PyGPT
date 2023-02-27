@@ -33,7 +33,14 @@ headers = {
 }
 
 data = {
-    "model": "text-davinci-003",
+    # 1) Documented GPT3
+    #"model": "text-davinci-003",
+  
+    # 2) ChatGPT Legacy-Plus: https://chat.openai.com/chat?model=text-davinci-002-render-paid
+    # "model": "text-davinci-002-render-paid"
+  
+    # 3) ChatGPT Default-Speed-Plus: https://chat.openai.com/chat?model=text-davinci-002-render-sha
+    "model": "text-davinci-002-render-sha",
     "prompt": keyword,
     "max_tokens": 4000,
     "temperature": temperature
