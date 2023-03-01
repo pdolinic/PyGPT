@@ -13,6 +13,16 @@ import json
 model = "gpt-3.5-turbo"
 my_api_key = "my_api_key"
 
+
+print("--------------------------------------------------------------------------------------------")
+print(r"""
+  .----.-.  .-.---..----. .---.
+  | {}  } \/ /   __} {}  |_   _}
+  | .--' }  {\  {_ } .--'  | |
+  `-'    `--' `---'`-'     `-'
+      """)
+print("--------------------------------------------------------------------------------------------")
+
 if len(sys.argv) != 2:
     print("Usage: python3 pygpt.py \"prompt\"")
     sys.exit(1)
@@ -62,7 +72,7 @@ if response.status_code == 200:
         debugging_fields["created"] = output["created"]
     if "model" in output:
         debugging_fields["model"] = output["model"]
-
+    print("--------------------------------------------------------------------------------------------")
     print("Debugging fields:", json.dumps(debugging_fields, indent=4))
 
 else:
