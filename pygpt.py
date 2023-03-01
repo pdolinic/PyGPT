@@ -1,62 +1,69 @@
+#!/usr/bin/env python3
+
 # Idea of Shell Variant & Blogpost from SAKATA: https://medium.com/geekculture/2022-how-to-use-chatgpt-api-with-curl-88830dec8a65
 # Asciart from: https://patorjk.com/software/taag/#p=testall&h=2&v=1&c=bash&f=Graffiti&t=pygpt
-# The following Python3 modified Code was AI-assisted with GPT, for GPT!
+# The following Python3 modified Code was AI-assisted with GPT3, for GPT3!
 
-# Below replace my_api_key with your API-Key
-
-#!/usr/bin/env python3
 
 import sys
 import requests
 import json
 
-print("--------------------------------------------------------------------------------------------")
-print(r"""  
-  .----.-.  .-.---..----. .---. 
-  | {}  } \/ /   __} {}  |_   _}
-  | .--' }  {\  {_ } .--'  | |  
-  `-'    `--' `---'`-'     `-'  
-      """)
-print("--------------------------------------------------------------------------------------------")
+# Set model and API key
+model = "gpt-3.5-turbo"
+my_api_key = "my_api_key"
 
-if len(sys.argv) != 3:
-    print("Usage: python script.py prompt temperature")
-    print('Example: python3 openai.py "Explain divide & conquer in C++, then show some code!" 1.0')
+if len(sys.argv) != 2:
+    print("Usage: python3 pygpt.py \"prompt\"")
     sys.exit(1)
 
-keyword = sys.argv[1]
-temperature = float(sys.argv[2])
+prompt = sys.argv[1]
 
-headers = {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer my_api_key"
+json_data = {
+    "model": model,
+    "messages": [
+        {
+            "role": "user",
+            "content": prompt
+        }
+    ]
 }
 
-data = {
-    # 1) Documented GPT3
-    "model": "text-davinci-003",
-    # 2) ChatGPT Legacy-Plus: https://chat.openai.com/chat?model=text-davinci-002-render-paid
-    #"model": "text-davinci-002-render-paid"
-    # 3) ChatGPT Default-Speed-Plus: https://chat.openai.com/chat?model=text-davinci-002-render-sha
-    #"model": "text-davinci-002-render-sha",
-    "prompt": keyword,
-    "max_tokens": 4000,
-    "temperature": temperature
-}
+response = requests.post(
+    "https://api.openai.com/v1/chat/completions",
+    headers={
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {my_api_key}"
+    },
+    json=json_data
+)
 
-response = requests.post("https://api.openai.com/v1/completions", headers=headers, json=data)
+if response.status_code == 200:
+    output = response.json()
+    print(json.dumps(output, indent=4))
 
-output = response.json()
+    if "choices" in output:
+        for choice in output["choices"]:
+            if "text" in choice:
+                text = choice["text"]
+                print(text)
+            else:
+                print("No response generated")
+    else:
+        print("Error: no choices in output")
 
-for choice in output["choices"]:
-    print(choice["text"].strip())
+    debugging_fields = {}
 
-debugging_fields = {
-    "id": output["id"],
-    "object": output["object"],
-    "created": output["created"],
-    "model": output["model"]
-}
+    if "id" in output:
+        debugging_fields["id"] = output["id"]
+    if "object" in output:
+        debugging_fields["object"] = output["object"]
+    if "created" in output:
+        debugging_fields["created"] = output["created"]
+    if "model" in output:
+        debugging_fields["model"] = output["model"]
 
-print("--------------------------------------------------------------------------------------------")
-print("Debugging fields:", json.dumps(debugging_fields))
+    print("Debugging fields:", json.dumps(debugging_fields, indent=4))
+
+else:
+    print("Error: {} {}".format(response.status_code, response.reason))
