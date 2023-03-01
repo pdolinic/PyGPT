@@ -50,13 +50,13 @@ response = requests.post(
 
 if response.status_code == 200:
     output = response.json()
-    print(json.dumps(output, indent=4))
+#    print(json.dumps(output, indent=4))
 
     if "choices" in output:
         for choice in output["choices"]:
-            if "text" in choice:
-                text = choice["text"]
-                print(text)
+            if "message" in choice and "content" in choice["message"]:
+                content = choice["message"]["content"]
+                print(content)
             else:
                 print("No response generated")
     else:
