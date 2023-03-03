@@ -55,6 +55,7 @@ response = requests.post(
 
 if response.status_code == 200:
     output = response.json()
+    #print(json.dumps(output, indent=4))
 
     if "choices" in output:
         for choice in output["choices"]:
