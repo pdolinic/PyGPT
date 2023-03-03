@@ -4,15 +4,19 @@
 # Asciart from: https://patorjk.com/software/taag/#p=testall&h=2&v=1&c=bash&f=Graffiti&t=pygpt
 # The following Python3 modified Code was AI-assisted with GPT3, for GPT3!
 
-
 import sys
 import requests
 import json
 
-# Set model and API key
+# Set model 
 model = "gpt-3.5-turbo"
-my_api_key = "my_api_key"
 
+# Set api key file & api key path 
+api_key_file = "my_api_key.txt"
+api_key_path = f"/usr/local/bin/{api_key_file}"
+
+with open(api_key_path, "r") as f:
+    my_api_key = f.read().strip()
 
 print("--------------------------------------------------------------------------------------------")
 print(r"""
@@ -23,11 +27,11 @@ print(r"""
       """)
 print("--------------------------------------------------------------------------------------------")
 
-if len(sys.argv) != 2:
-    print("Usage: python3 pygpt.py \"prompt\"")
+if len(sys.argv) < 2:
+    print("Usage: python3 pygpt.py prompt1 prompt2 prompt3 ...")
     sys.exit(1)
 
-prompt = sys.argv[1]
+prompts = sys.argv[1:]
 
 json_data = {
     "model": model,
@@ -36,6 +40,7 @@ json_data = {
             "role": "user",
             "content": prompt
         }
+        for prompt in prompts
     ]
 }
 
@@ -50,7 +55,6 @@ response = requests.post(
 
 if response.status_code == 200:
     output = response.json()
-#    print(json.dumps(output, indent=4))
 
     if "choices" in output:
         for choice in output["choices"]:
@@ -72,6 +76,7 @@ if response.status_code == 200:
         debugging_fields["created"] = output["created"]
     if "model" in output:
         debugging_fields["model"] = output["model"]
+
     print("--------------------------------------------------------------------------------------------")
     print("Debugging fields:", json.dumps(debugging_fields, indent=4))
 
