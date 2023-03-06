@@ -26,10 +26,10 @@ print(r"""
   | .--' }  {\  {_ } .--'  | |
   `-'    `--' `---'`-'     `-'
       """)
-print("--------------------------------------------------------------------------------------------")
+print("--------------------------------------------------------------------------------------------\n")
 
 if len(sys.argv) < 2:
-    print("Usage: python3 pygpt.py prompt1 prompt2 prompt3 ...")
+    print("Usage: python3 pygpt.py prompts ...")
     sys.exit(1)
 
 prompts = sys.argv[1:]
@@ -50,7 +50,7 @@ async def process_prompt(prompts, session):
                 for choice in output["choices"]:
                     if "message" in choice and "content" in choice["message"]:
                         content = choice["message"]["content"]
-                        print(f"Prompt: {' '.join(prompts)}\nResponse: {content}\n")
+                        print(f"{content}\n")
                     else:
                         print("No response generated")
             else:
@@ -71,5 +71,4 @@ async def run(prompts):
     async with aiohttp.ClientSession() as session:
         await process_prompt(prompts, session)
 
-# Call the run function with the prompts variable
 asyncio.run(run(prompts))
