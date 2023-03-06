@@ -5,13 +5,14 @@
 # The following Python3 modified Code was AI-assisted with GPT3, for GPT3!
 
 import sys
-import requests
+import aiohttp
+import asyncio
 import json
 
-# Set model 
+# Set model
 model = "gpt-3.5-turbo"
 
-# Set api key file & api key path 
+# Set api key file & api key path
 api_key_file = "my_api_key.txt"
 api_key_path = f"/usr/local/bin/{api_key_file}"
 
@@ -33,53 +34,42 @@ if len(sys.argv) < 2:
 
 prompts = sys.argv[1:]
 
-json_data = {
-    "model": model,
-    "messages": [
-        {
-            "role": "user",
-            "content": prompt
-        }
-        for prompt in prompts
-    ]
-}
+async def process_prompt(prompts, session):
+    messages = [{"role": "user", "content": prompt} for prompt in prompts]
+    json_data = {"model": model, "messages": messages}
 
-response = requests.post(
-    "https://api.openai.com/v1/chat/completions",
-    headers={
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {my_api_key}"
-    },
-    json=json_data
-)
+    async with session.post(
+        "https://api.openai.com/v1/chat/completions",
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {my_api_key}"},
+        json=json_data
+    ) as response:
+        if response.status == 200:
+            output = await response.json()
 
-if response.status_code == 200:
-    output = response.json()
-    #print(json.dumps(output, indent=4))
-
-    if "choices" in output:
-        for choice in output["choices"]:
-            if "message" in choice and "content" in choice["message"]:
-                content = choice["message"]["content"]
-                print(content)
+            if "choices" in output:
+                for choice in output["choices"]:
+                    if "message" in choice and "content" in choice["message"]:
+                        content = choice["message"]["content"]
+                        print(f"Prompt: {' '.join(prompts)}\nResponse: {content}\n")
+                    else:
+                        print("No response generated")
             else:
-                print("No response generated")
-    else:
-        print("Error: no choices in output")
+                print("Error: no choices in output")
 
-    debugging_fields = {}
+            debugging_fields = {}
+            for field in ["id", "object", "created", "model"]:
+                if field in output:
+                    debugging_fields[field] = output[field]
 
-    if "id" in output:
-        debugging_fields["id"] = output["id"]
-    if "object" in output:
-        debugging_fields["object"] = output["object"]
-    if "created" in output:
-        debugging_fields["created"] = output["created"]
-    if "model" in output:
-        debugging_fields["model"] = output["model"]
+            print("--------------------------------------------------------------------------------------------")
+            print("Debugging fields:", json.dumps(debugging_fields, indent=4))
 
-    print("--------------------------------------------------------------------------------------------")
-    print("Debugging fields:", json.dumps(debugging_fields, indent=4))
+        else:
+            print(f"Error processing prompt '{prompt}': {response.status} {response.reason}")
 
-else:
-    print("Error: {} {}".format(response.status_code, response.reason))
+async def run(prompts):
+    async with aiohttp.ClientSession() as session:
+        await process_prompt(prompts, session)
+
+# Call the run function with the prompts variable
+asyncio.run(run(prompts))
